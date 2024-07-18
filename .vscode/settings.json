@@ -1,0 +1,47 @@
+{
+    "git.autoRepositoryDetection": "subFolders",
+    "explorer.compactFolders": false,
+    "breadcrumbs.enabled": true,
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": false,
+    "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.inlayHints.callArgumentNames": "off",
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.importFormat": "relative",
+    "python.analysis.enablePytestSupport": true,
+    "python.analysis.indexing": true,
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "fastapi",
+            "depth": 4,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "pydantic",
+            "depth": 3,
+            "includeAllSymbols": true
+        },
+        {
+            "name": "sqlalchemy",
+            "depth": 4,
+            "includeAllSymbols": true
+        },{
+            "name": "aiogram",
+            "depth": 5,
+            "includeAllSymbols": true
+        }
+    ],
+      
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "files.associations": {
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements"
+    },
+    "files.refactoring.autoSave": false,
+}
