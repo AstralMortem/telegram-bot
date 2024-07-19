@@ -17,6 +17,8 @@ const props = defineProps({
 const computedColor = computed(() => {
   switch(props.color){
     case "white": return "bg-white text-neutral-900";
+    case "red": return "bg-red-500 text-white";
+    case "green": return "bg-green-500 text-white"
     default: return "bg-white text-neutral-900";
   }
 })

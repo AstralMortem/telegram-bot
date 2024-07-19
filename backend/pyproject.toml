@@ -11,6 +11,7 @@ aiogram = "^3.10.0"
 fastapi = "^0.111.1"
 sqlalchemy = "^2.0.31"
 pydantic-settings = "^2.3.4"
+asyncpg = "^0.29.0"
 
 
 [build-system]

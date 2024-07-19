@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import UUID, uuid4
-from sqlalchemy import Float, ForeignKey, func
+from sqlalchemy import Float, ForeignKey, func, BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -10,8 +10,7 @@ class BaseModel(DeclarativeBase):
 
 class User(BaseModel):
     __tablename__ = "users"
-    id: Mapped[UUID] = mapped_column(primary_key=True, index=True, default=uuid4())
-    tg_id: Mapped[str] = mapped_column(unique=True, index=True)
+    id: Mapped[int] = mapped_column(BigInteger,primary_key=True, unique=True, index=True)
     username: Mapped[str]
     silver_amount: Mapped[float] = mapped_column(Float(precision=2), default=1000)
     gold_amount: Mapped[float] = mapped_column(Float(precision=2), default=0)
@@ -24,5 +23,5 @@ class GoldTransaction(BaseModel):
     id: Mapped[UUID] = mapped_column(default=uuid4(), primary_key=True, index=True)
     total_gold: Mapped[Float] = mapped_column(Float(precision=2), default=1_000_000_000)
     gold_price: Mapped[Float] = mapped_column(Float(precision=2), default=1)
-    user_id: Mapped[UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())

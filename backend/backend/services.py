@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from db.connect import sessionmanager
 from db.models import GoldTransaction, User
-from schemas import GoldListDTO, Pagination, UserAddDTO, UserListDTO
+from db.schemas import GoldListDTO, Pagination, UserAddDTO, UserListDTO
 from config import settings
 
 
@@ -20,35 +20,26 @@ class UserService:
             instance = await session.scalars(stmt)
             return [UserListDTO.model_validate(user) for user in instance.all()]
 
-    async def _get_user_by_key(self, key: str, value: Any):
+    async def get_user(self, id: int):
         async with sessionmanager.session() as session:
-            stmt = (
-                select(User)
-                .where(
-                    User.__dict__[key] == value, User.is_active == True  # noqa: E712
-                )
-                .limit(1)
-            )
-            instance = await session.scalar(stmt)
+            instance = await session.get(User, id)
             if not instance:
                 raise HTTPException(status.HTTP_400_BAD_REQUEST, "User does not exists")
-            return instance
-
-    async def get_user_by_tg(self, tg_id: str):
-        instance = await self._get_user_by_key("tg_id", tg_id)
-        return UserListDTO.model_validate(instance)
+            return UserListDTO.model_validate(instance)
 
     async def create_user(self, data: UserAddDTO):
         async with sessionmanager.session() as session:
-            instance = User(**data.model_dump())
-            session.add(instance)
-            await session.commit()
-            await session.refresh(instance)
-            return UserListDTO.model_validate(instance)
+            try:
+                instance = await self.get_user(data.id)
+                return instance
+            except HTTPException:
+                instance = User(**data.model_dump())
+                session.add(instance)
+                await session.commit()
+                return UserListDTO.model_validate(instance)
 
 
 class GoldService:
-
     async def get_last_gold(self):
         async with sessionmanager.session() as session:
             statement = (

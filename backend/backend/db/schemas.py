@@ -1,19 +1,20 @@
 from datetime import datetime
 from uuid import UUID
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class UserAddDTO(BaseModel):
-    tg_id: str
+    id: int
     username: str
     silver_amount: float = 1000
     gold_amount: float = 0
     is_active: bool = True
     created_at: datetime | None = None
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserListDTO(UserAddDTO):
-    id: UUID
+    pass
 
 
 class GoldAddDTO(BaseModel):
@@ -22,11 +23,13 @@ class GoldAddDTO(BaseModel):
     user_id: UUID | None = None
     created_at: datetime | None = None
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class GoldListDTO(GoldAddDTO):
     id: UUID
 
 
 class Pagination(BaseModel):
-    limit: int
-    offset: int
+    limit: int | None = None
+    offset: int | None = None

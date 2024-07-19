@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
 )
-from ..config import settings
-from models import BaseModel
+from config import settings
+from .models import BaseModel
 
 
 class DatabaseSessionManager:
@@ -65,5 +65,5 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db():
-    async with sessionmanager._engine.begin() as conn:
+    async with sessionmanager.connect() as conn:
         await conn.run_sync(BaseModel.metadata.create_all)

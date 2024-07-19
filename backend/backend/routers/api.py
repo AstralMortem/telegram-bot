@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from schemas import Pagination, UserAddDTO
+from db.schemas import Pagination
 from services import UserService, GoldService
 
 api_router = APIRouter()
@@ -15,22 +15,22 @@ async def get_users(service: user_service, pagination: Pagination = Depends()):
 
 
 @api_router.get("/users/{user_id}")
-async def get_user_profile(user_id: str, service: user_service):
-    return await service.get_user_by_tg(user_id)
+async def get_user_profile(user_id: int, service: user_service):
+    return await service.get_user(user_id)
 
 
-@api_router.post("/users")
-async def create_user(service: user_service, data: UserAddDTO):
-    return await service.create_user(data)
+# @api_router.post("/users")
+# async def create_user(service: user_service, data: UserAddDTO):
+#     return await service.create_user(data)
 
 
 @api_router.post("/buy_gold")
-async def buy_gold(service: gold_service, user_id: str, amount: float):
+async def buy_gold(service: gold_service, user_id: int, amount: float):
     return await service.buy_gold(user_id, amount)
 
 
 @api_router.post("/sell_gold")
-async def sell_gold(service: gold_service, user_id: str, amount: float):
+async def sell_gold(service: gold_service, user_id: int, amount: float):
     return await service.sell_gold(user_id, amount)
 
 
