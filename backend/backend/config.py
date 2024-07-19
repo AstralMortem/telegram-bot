@@ -9,15 +9,11 @@ class Settings(BaseSettings):
     BOT_TOKEN: str = ""
     WEBAPP_URL: str = "https://google.com"
     BACKEND_URL: str = "http://127.0.0.1:8000"
+    VITE_BACKEND_URL: str = BACKEND_URL
     DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost/dbname"
+    WEBHOOK_PATH: str = '/webhook'
 
-    CORS_ORIGINS: list[str] = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:5173"
-]
+    CORS_ORIGINS: str = ""
 
     CURVE_KOEF_A: float = 0.000001
     CURVE_KOEF_B: float = 0
@@ -27,3 +23,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+WEBHOOK_URL: str = settings.BACKEND_URL + settings.WEBHOOK_PATH
+print(WEBHOOK_URL)

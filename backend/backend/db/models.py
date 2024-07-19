@@ -14,6 +14,7 @@ class User(BaseModel):
     username: Mapped[str]
     silver_amount: Mapped[float] = mapped_column(Float(precision=2), default=1000)
     gold_amount: Mapped[float] = mapped_column(Float(precision=2), default=0)
+    image_url: Mapped[str| None]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     is_active: Mapped[bool] = mapped_column(default=True)
 

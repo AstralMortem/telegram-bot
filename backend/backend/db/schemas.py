@@ -10,6 +10,7 @@ class UserAddDTO(BaseModel):
     gold_amount: float = 0
     is_active: bool = True
     created_at: datetime | None = None
+    image_url: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

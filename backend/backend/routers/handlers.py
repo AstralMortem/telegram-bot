@@ -1,11 +1,12 @@
 from aiogram import Router
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.types import (
     CallbackQuery,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
     WebAppInfo,
+    UserProfilePhotos
 )
 from db.schemas import UserAddDTO
 from services import UserService
