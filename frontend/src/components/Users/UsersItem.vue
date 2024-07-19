@@ -5,6 +5,7 @@ import { computed, type PropType } from 'vue'
 import SilverAmount from '../UI/SilverAmount.vue'
 import { useWebApp } from 'vue-tg'
 import UAvatar from '../UI/UAvatar.vue'
+import GoldAmount from '../UI/GoldAmount.vue'
 
 const goldStore = useGoldStore()
 

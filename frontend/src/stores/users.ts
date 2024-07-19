@@ -45,8 +45,8 @@ export const useUsersStore = defineStore('usersStore', {
 
       this.pending = false
     },
-    getSelectedUser(user_id: number) {
-      return this.users.filter((x) => x.id === user_id)
+    getSelectedUser(user_id: string) {
+      return this.users.find((x) => x.id === Number.parseInt(user_id))
     }
   }
 })

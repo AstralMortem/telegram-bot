@@ -27,7 +27,8 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full h-min overflow-auto flex flex-col gap-3" ref="scrollComponent">
-    <UsersItem :data="current_user" class="bg-green-600" me />
+    <UsersItem :data="current_user" class="bg-green-600 mb-2" me />
+    <hr/>
     <p v-if="pending">Loading...</p>
     <UsersItem v-else v-for="data in getUsers" :key="data.id" :data="data" />
   </div>
