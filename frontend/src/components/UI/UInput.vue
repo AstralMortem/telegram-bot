@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const model = defineModel({ default: null })
+
 </script>
 
 <template>

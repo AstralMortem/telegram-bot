@@ -4,9 +4,10 @@ import SilverAmount from '@/components/UI/SilverAmount.vue'
 import UButton from '@/components/UI/UButton.vue'
 import UCard from '@/components/UI/UCard.vue'
 import UModal from '@/components/UI/UModal.vue'
+import UModalBuy from '@/components/UI/UModalBuy.vue'
+import UModalSell from '@/components/UI/UModalSell.vue'
 import UsersList from '@/components/Users/UsersList.vue'
 import axios from '@/plugins/axios'
-import { connectWebSocet, socket } from '@/plugins/websocket'
 import { useGoldStore } from '@/stores/gold'
 import { useUsersStore } from '@/stores/users'
 import { Icon } from '@iconify/vue/dist/iconify.js'
@@ -98,8 +99,8 @@ onMounted(async () => {
       />
     </div>
 
-    <UModal v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold" transaction="buy" />
-    <UModal v-show="showSell" @cancel="showSell = false" @confirm="sellGold" transaction="sell" />
+    <UModalBuy v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold" transaction="buy" />
+    <UModalSell v-show="showSell" @cancel="showSell = false" @confirm="sellGold" transaction="sell" />
     <tg-alert :message="showError" v-if="showError" @close="showError = undefined"/>
     <UCard class="w-full">
       <UsersList />

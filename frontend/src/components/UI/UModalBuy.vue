@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 defineEmits(['confirm', 'cancel'])
 const props = defineProps(["transaction"])
@@ -12,17 +12,24 @@ import { useGoldStore } from '@/stores/gold';
 const goldStore = useGoldStore()
 
 
-const gold = ref<number>(0)
-const silver = ref<number>(0)
+const goldAmount = ref<number>(0)
 
-const convert = computed(()=>{
-  if(props.transaction == "buy"){
-    return gold.value * goldStore.price
-  }else{
-    return (input.value / goldStore.price).toFixed(4)
-  }
-  })
+const silverAmount = computed({
+    get(){
+        return goldAmount.value * goldStore.price
+    },
+    set(value){
+      goldAmount.value = value / goldStore.price
+    }
+})
 
+watch(goldAmount, (newVal)=>{
+  silverAmount.value = newVal * goldStore.price
+})
+
+watch(silverAmount, (newVal)=>{
+  goldAmount.value = newVal / goldStore.price
+})
 
 </script>
 
@@ -37,17 +44,17 @@ const convert = computed(()=>{
           <div class="flex flex-col p-4 gap-4">
             <p class="text-lg flex items-center">How much <span>
               <img :src="$props.transaction == 'buy'?'/img/gold_coin.png':'/img/silver_coin.png'" class="w-10 h-10 mx-1"/>
-            </span> you want to {{ $props.transaction == 'sell'?'sell':'buy' }}?</p>
+            </span> you want to buy</p>
             <div class="flex flex-row gap-1 items-center justify-start w-fit flex-wrap">
               
               <div class="flex flex-row gap-1 justify-start">
-                <img :src="$props.transaction == 'buy'?'/img/gold_coin.png':'/img/silver_coin.png'" class="w-10 h-10"/>
-                <UInput v-model="input" />
+                <img src='/img/gold_coin.png' class="w-10 h-10"/>
+                <UInput v-model="goldAmount" />
               </div>
               <p class="text-lg font-bold">≈</p>
               <div class="flex flex-row gap-1 justify-start">
-                <img :src="$props.transaction == 'sell'?'/img/gold_coin.png':'/img/silver_coin.png'" class="w-10 h-10"/>
-                <UInput v-model="convert2"/>
+                <img src="/img/silver_coin.png" class="w-10 h-10"/>
+                <UInput v-model="silverAmount"/>
               </div>
               
               <!-- <SilverAmount v-if="$props.transaction == 'sell'" :amount="convert"/>
@@ -55,8 +62,8 @@ const convert = computed(()=>{
             </div>
             
             <div class="flex flex-row justify-start gap-4">
-              <UButton label="Confirm" color="green" @click="$emit('confirm', input)" :disabled="!input" />
-              <UButton label="Cancel" color="red" @click="$emit('cancel'), (input = 0)" />
+              <UButton label="Confirm" color="green" @click="$emit('confirm', silverAmount.toFixed(4))" :disabled="!silverAmount || !goldAmount" />
+              <UButton label="Cancel" color="red" @click="$emit('cancel'), (goldAmount = 0)" />
             </div>
           </div>
         </div>
