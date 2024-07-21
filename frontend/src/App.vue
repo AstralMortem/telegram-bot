@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useGoldStore } from './stores/gold';
+import { onMounted } from 'vue';
 
 const goldStore = useGoldStore();
-goldStore.bindEvents()
+
+
+onMounted(async ()=>{
+  await goldStore.fetchGold()
+  goldStore.bindEvents()
+})
 </script>
 
 <template>
