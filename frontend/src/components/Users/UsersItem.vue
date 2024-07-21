@@ -23,7 +23,8 @@ const wealth = computed(() => {
 
 <template>
   <RouterLink
-    class="flex flex-row justify-between items-center gap-4 w-full bg-neutral-700 p-2 rounded-lg"
+    class="flex flex-row justify-between items-center gap-4 w-full p-2 rounded-lg"
+    :class="me?'bg-blue-500':'bg-neutral-700'"
     :to="`/users/${$props.data.id}`"
   >
     <UAvatar :username="$props.data.username" :image="$props.data.image_url" />

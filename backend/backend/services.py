@@ -58,11 +58,13 @@ class GoldService:
             print(result.model_dump())
             return result
 
-    def bounding_curve_price(self, price, amount):
+    def bounding_curve_price(self, amount):
         # @amount: new total gold (GOLD TO SUPLY + GOLD TO TRANSACT)
         # @price: gold price
         k = settings.BOUNDING_CURVE_KOEF / settings.INITIAL_GOLD_SUPPLY
-        result = price * math.exp(k * (amount - settings.INITIAL_GOLD_SUPPLY))
+        result = settings.INITIAL_GOLD_PRICE * math.exp(
+            k * (amount - settings.INITIAL_GOLD_SUPPLY)
+        )
         return round_decimal(result, 4)
 
     async def buy_gold(self, user_id, amount: float):
@@ -92,7 +94,7 @@ class GoldService:
 
             new_transaction = GoldTransaction(
                 total_gold=new_total_gold,
-                gold_price=self.bounding_curve_price(gold.gold_price, new_total_gold),
+                gold_price=self.bounding_curve_price(new_total_gold),
                 user_id=user_id,
                 type="+",
             )
@@ -131,7 +133,7 @@ class GoldService:
 
             new_transaction = GoldTransaction(
                 total_gold=new_gold_amount,
-                gold_price=self.bounding_curve_price(gold.gold_price, new_gold_amount),
+                gold_price=self.bounding_curve_price(new_gold_amount),
                 user_id=user_id,
                 type="-",
             )

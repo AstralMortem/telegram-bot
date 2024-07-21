@@ -16,7 +16,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { useWebApp, useWebAppViewport } from 'vue-tg'
 
 const goldStore = useGoldStore()
-const { pending, price, amount } = storeToRefs(goldStore)
+const { pending, price, amount, is_new_price_up } = storeToRefs(goldStore)
 const userStore = useUsersStore()
 
 
@@ -84,7 +84,11 @@ onMounted(async () => {
         <div class="flex flex-row items-center justify-around">
           <GoldAmount :amount="1" size="8"/>
           <Icon icon="streamline:equal-sign-solid"/>
-          <SilverAmount :amount="price" />
+          <div class="px-2 rounded-lg flex flex-start items-center gap-2 " :class="is_new_price_up?'bg-green-500':'bg-red-500'">
+            <Icon icon="uil:chart-up" v-if="is_new_price_up" class="text-2xl"/>
+            <Icon icon="uil:chart-down" v-else class="text-2xl"/>
+            <SilverAmount :amount="price" />
+          </div>
         </div>
         
       </div>
@@ -99,8 +103,8 @@ onMounted(async () => {
       />
     </div>
 
-    <UModalBuy v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold" transaction="buy" />
-    <UModalSell v-show="showSell" @cancel="showSell = false" @confirm="sellGold" transaction="sell" />
+    <UModalBuy v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold"  />
+    <UModalSell v-show="showSell" @cancel="showSell = false" @confirm="sellGold" />
     <tg-alert :message="showError" v-if="showError" @close="showError = undefined"/>
     <UCard class="w-full">
       <UsersList />
