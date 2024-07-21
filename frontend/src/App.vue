@@ -2,13 +2,16 @@
 import { RouterView } from 'vue-router'
 import { useGoldStore } from './stores/gold';
 import { onMounted } from 'vue';
+import { useUsersStore } from './stores/users';
 
 const goldStore = useGoldStore();
+const userStore = useUsersStore()
 
 
 onMounted(async ()=>{
   await goldStore.fetchGold()
   goldStore.bindEvents()
+  userStore.bindEvents()
 })
 </script>
 

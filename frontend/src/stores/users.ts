@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { type IUserList } from '../types'
 import axios from '../plugins/axios'
+import { socket } from '@/plugins/websocket'
 
 export const useUsersStore = defineStore('usersStore', {
   state: () => ({
@@ -45,6 +46,17 @@ export const useUsersStore = defineStore('usersStore', {
     },
     setCurrentUser(user_data:IUserList){
       this.current_user = user_data
-    }
+    },
+    bindEvents(){
+      socket.on("connect", ()=>{
+        socket.on("user:current", (data)=>{
+          const dict = JSON.parse(data)
+          if(this.current_user.id != dict.id){
+            const index = this.users.findIndex(x => x.id === dict.id)
+            this.users[index] = dict
+          }
+        })
+      })
+    },
   }
 })

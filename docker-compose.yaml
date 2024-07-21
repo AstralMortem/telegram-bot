@@ -10,42 +10,34 @@ services:
       POSTGRES_PASSWORD: "bot_password"
     volumes:
       - pgdbdata:/var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
 
   backend:
     container_name: backend
     build: 
       context: .
       dockerfile: ./docker/backend/Dockerfile
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     env_file:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=(Host(`85ff-91-226-254-123.ngrok-free.app`) && PathPrefix(`/api`))
-      - traefik.http.routers.backend.entrypoints=web
-    volumes:
-      - ./backend:/src
+      - traefik.http.routers.backend.rule=Host(`api.host.com`)
 
   frontend:
     container_name: frontend
     build:
       context: .
       dockerfile: ./docker/frontend/Dockerfile
-    ports:
-      - "5173:5173"
-      - "24678:24678"
+    expose:
+      - 3000
     env_file:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend.rule=Host(`85ff-91-226-254-123.ngrok-free.app`)
-      - traefik.http.routers.frontend.entrypoints=web
-    volumes:
-      - ./frontend:/src
-      - node_modules:/src/node_modules
+      - traefik.http.routers.frontend.rule=Host(`host.com`)
 
   reverse-proxy:
     container_name: reverse-proxy
@@ -57,13 +49,11 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      - "8080:8080"
+      - "433:433"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
-
-
+      - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
+      - /root/ssl:/ssl-certs/
 
 volumes:
   pgdbdata: null
-  node_modules: null

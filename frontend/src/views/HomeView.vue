@@ -85,7 +85,7 @@ onMounted(async () => {
           <GoldAmount :amount="1" size="8"/>
           <Icon icon="streamline:equal-sign-solid"/>
           <div class="px-2 rounded-lg flex flex-start items-center gap-2 " :class="is_new_price_up?'bg-green-500':'bg-red-500'">
-            <Icon icon="uil:chart-up" v-if="is_new_price_up" class="text-2xl"/>
+            <Icon icon="uil:arrow-growth" v-if="is_new_price_up" class="text-2xl"/>
             <Icon icon="uil:chart-down" v-else class="text-2xl"/>
             <SilverAmount :amount="price" />
           </div>
