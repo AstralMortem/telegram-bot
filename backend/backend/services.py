@@ -1,6 +1,8 @@
+import math
 from typing import Any
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.testing.util import round_decimal
 from .db.connect import sessionmanager
 from .db.models import GoldTransaction, User
 from .db.schemas import GoldListDTO, Pagination, UserAddDTO, UserListDTO
@@ -56,12 +58,12 @@ class GoldService:
             print(result.model_dump())
             return result
 
-    def bounding_curve_price(self, x):
-        return (
-            (settings.CURVE_KOEF_A * x) ** 2
-            + settings.CURVE_KOEF_B * x
-            + settings.CURVE_KOEF_C
-        )
+    def bounding_curve_price(self, price, amount):
+        # @amount: new total gold (GOLD TO SUPLY + GOLD TO TRANSACT)
+        # @price: gold price
+        k = settings.BOUNDING_CURVE_KOEF / settings.INITIAL_GOLD_SUPPLY
+        result = price * math.exp(k * (amount - settings.INITIAL_GOLD_SUPPLY))
+        return round_decimal(result, 4)
 
     async def buy_gold(self, user_id, amount: float):
         async with sessionmanager.session() as session:
@@ -83,14 +85,14 @@ class GoldService:
             if user.silver_amount < amount:
                 raise HTTPException(status.HTTP_400_BAD_REQUEST, "Insufficient silver.")
 
-            total_cost = amount / gold.gold_price
-            user.silver_amount = round(user.silver_amount - amount, 4)
-            user.gold_amount = round(user.gold_amount + total_cost, 4)
-            new_total_gold = round(gold.total_gold + total_cost, 4)
+            total_cost = amount / gold.gold_price  # amount is silver
+            user.silver_amount = round_decimal(user.silver_amount - amount, 4)
+            user.gold_amount = round_decimal(user.gold_amount + total_cost, 4)
+            new_total_gold = round_decimal(gold.total_gold + total_cost, 4)
 
             new_transaction = GoldTransaction(
                 total_gold=new_total_gold,
-                gold_price=round(self.bounding_curve_price(new_total_gold), 4),
+                gold_price=self.bounding_curve_price(gold.gold_price, new_total_gold),
                 user_id=user_id,
                 type="+",
             )
@@ -122,13 +124,14 @@ class GoldService:
             if user.gold_amount < amount:
                 raise HTTPException(status.HTTP_400_BAD_REQUEST, "Insufficient gold.")
 
-            total_revenue = round(gold.gold_price * amount, 4)
-            user.gold_amount = round(user.gold_amount - amount, 4)
-            user.silver_amount = round(user.silver_amount + total_revenue, 4)
-            new_gold_amount = round(gold.total_gold - amount, 4)
+            total_revenue = round_decimal(gold.gold_price * amount, 4)
+            user.gold_amount = round_decimal(user.gold_amount - amount, 4)
+            user.silver_amount = round_decimal(user.silver_amount + total_revenue, 4)
+            new_gold_amount = round_decimal(gold.total_gold - amount, 4)
+
             new_transaction = GoldTransaction(
                 total_gold=new_gold_amount,
-                gold_price=round(self.bounding_curve_price(new_gold_amount), 4),
+                gold_price=self.bounding_curve_price(gold.gold_price, new_gold_amount),
                 user_id=user_id,
                 type="-",
             )

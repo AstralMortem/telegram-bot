@@ -17,9 +17,9 @@ class Settings(BaseSettings):
         "https://893f-91-226-254-123.ngrok-free.app,https://f8a3-91-226-254-123.ngrok-free.app"
     )
 
-    CURVE_KOEF_A: float = 0.00000001
-    CURVE_KOEF_B: float = 0
-    CURVE_KOEF_C: float = 1
+    INITIAL_GOLD_SUPPLY: int = 1000000000
+    INITIAL_GOLD_PRICE: int = 1
+    BOUNDING_CURVE_KOEF: int = 1000000
 
     model_config = SettingsConfigDict(env_file=DOTENV)
 

@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 from sqlalchemy import ForeignKey, func, BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from ..config import settings
 
 
 class BaseModel(DeclarativeBase):
@@ -24,8 +25,8 @@ class User(BaseModel):
 class GoldTransaction(BaseModel):
     __tablename__ = "gold_transactions"
     id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True, index=True)
-    total_gold: Mapped[float] = mapped_column(default=1_000_000_000)
-    gold_price: Mapped[float] = mapped_column(default=1)
+    total_gold: Mapped[float] = mapped_column(default=settings.INITIAL_GOLD_SUPPLY)
+    gold_price: Mapped[float] = mapped_column(default=settings.INITIAL_GOLD_PRICE)
     user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     type: Mapped[str] = mapped_column(default="+")
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
