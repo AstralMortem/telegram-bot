@@ -1,14 +1,16 @@
 # database.py
 import contextlib
+import select
 from typing import Any, AsyncGenerator, AsyncIterator
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
     create_async_engine,
     async_sessionmaker,
 )
-from config import settings
-from .models import BaseModel
+from ..config import settings
+from .models import BaseModel, GoldTransaction
 
 
 class DatabaseSessionManager:
@@ -67,3 +69,10 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     async with sessionmanager.connect() as conn:
         await conn.run_sync(BaseModel.metadata.create_all)
+
+    async with sessionmanager.session() as session:
+        stmt = select(GoldTransaction)
+        transactions = await session.scalars(stmt)
+        if len(list(transactions.all())) <= 0:
+            session.add(GoldTransaction())
+            await session.commit()

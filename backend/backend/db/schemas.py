@@ -21,7 +21,7 @@ class UserListDTO(UserAddDTO):
 class GoldAddDTO(BaseModel):
     total_gold: float = 1_000_000_000
     gold_price: float = 1
-    user_id: UUID | None = None
+    user_id: int | None = None
     created_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
@@ -34,3 +34,8 @@ class GoldListDTO(GoldAddDTO):
 class Pagination(BaseModel):
     limit: int | None = None
     offset: int | None = None
+
+
+class GoldBody(BaseModel):
+    user_id: int
+    amount: float

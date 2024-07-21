@@ -11,11 +11,13 @@ class Settings(BaseSettings):
     BACKEND_URL: str = "http://127.0.0.1:8000"
     VITE_BACKEND_URL: str = BACKEND_URL
     DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost/dbname"
-    WEBHOOK_PATH: str = '/webhook'
+    WEBHOOK_PATH: str = "/webhook"
 
-    CORS_ORIGINS: str = ""
+    CORS_ORIGINS: str = (
+        "https://893f-91-226-254-123.ngrok-free.app,https://f8a3-91-226-254-123.ngrok-free.app"
+    )
 
-    CURVE_KOEF_A: float = 0.000001
+    CURVE_KOEF_A: float = 0.00000001
     CURVE_KOEF_B: float = 0
     CURVE_KOEF_C: float = 1
 

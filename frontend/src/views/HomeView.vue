@@ -6,11 +6,13 @@ import UCard from '@/components/UI/UCard.vue'
 import UModal from '@/components/UI/UModal.vue'
 import UsersList from '@/components/Users/UsersList.vue'
 import axios from '@/plugins/axios'
+import { connectWebSocet, socket } from '@/plugins/websocket'
 import { useGoldStore } from '@/stores/gold'
 import { useUsersStore } from '@/stores/users'
+import { Icon } from '@iconify/vue/dist/iconify.js'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
-import { useWebAppViewport } from 'vue-tg'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useWebApp, useWebAppViewport } from 'vue-tg'
 
 const goldStore = useGoldStore()
 const { pending, price, amount } = storeToRefs(goldStore)
@@ -21,8 +23,9 @@ const showBuy = ref(false)
 const showSell = ref(false)
 const showError = ref()
 
+
 const buyGold = async (amount: number) => {
-  if(userStore.current_user.silver_amount < (amount*price.value)){
+  if(userStore.current_user.silver_amount < amount){
     showError.value = "Not enough silver"
   }else{
     await axios.post('/buy_gold', {
@@ -30,37 +33,62 @@ const buyGold = async (amount: number) => {
       "amount": amount
     }).then(async (resp)=>{
       showBuy.value = false
-      await goldStore.fetchGold()
-      await userStore.fetchMe()
+      userStore.setCurrentUser(resp.data)
     }).catch((err)=>{
       showError.value = err.details
     })
   }
 }
 
-const sellGold = (amount: number) => {
-  console.log(amount)
+const sellGold = async (amount: number) => {
+  if(userStore.current_user.gold_amount < amount){
+    showError.value = "Not enough gold"
+  }else{
+    await axios.post('/sell_gold', {
+      "user_id": userStore.current_user.id,
+      "amount": amount
+    }).then(async (resp)=>{
+      showSell.value = false
+      userStore.setCurrentUser(resp.data)
+    }).catch((err)=>{
+      showError.value = err.details
+    })
+  }
 }
 
-onMounted(() => {
+
+onMounted(async () => {
+  const tgApp = useWebApp().initDataUnsafe
+  
+  if(tgApp.user){
+    await userStore.fetchUser(tgApp.user.id)
+  }
+  
   useWebAppViewport().expand()
 })
+
+
 </script>
 
 <template>
   <div class="w-full h-full flex flex-col justify-start items-center gap-6 flex-1">
     <p v-if="pending">Loading...</p>
-    <UCard class="flex flex-row justify-between w-full text-lg font-bold" v-else>
-      <div class="flex flex-col gap-2">
-        <p>Market Cup:</p>
-        <GoldAmount :amount="amount" />
+    <UCard class="flex flex-col justify-between w-full text-lg font-bold gap-4" v-else>
+      <div class="flex flex-col gap-2 w-full items-center">
+        <p class="self-start text-sm">Market Cup:</p>
+        <p class="text-2xl text-wrap">{{ Math.round(amount) }} G</p>
       </div>
       <div class="flex flex-col gap-2">
-        <p>Price</p>
-        <SilverAmount :amount="price" />
+        <p class="text-sm">Price: </p>
+        <div class="flex flex-row items-center justify-around">
+          <GoldAmount :amount="1" size="8"/>
+          <Icon icon="streamline:equal-sign-solid"/>
+          <SilverAmount :amount="price" />
+        </div>
+        
       </div>
     </UCard>
-    <div class="flex flex-row items-center gap-4">
+    <div class="flex flex-row items-center gap-4 w-full px-4">
       <UButton label="Buy" trailing-icon="raphael:arrowup" color="green" @click="showBuy = true" />
       <UButton
         label="Sell"
@@ -70,8 +98,8 @@ onMounted(() => {
       />
     </div>
 
-    <UModal v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold" />
-    <UModal v-show="showSell" @cancel="showSell = false" @confirm="sellGold" />
+    <UModal v-show="showBuy" @cancel="showBuy = false" @confirm="buyGold" transaction="buy" />
+    <UModal v-show="showSell" @cancel="showSell = false" @confirm="sellGold" transaction="sell" />
     <tg-alert :message="showError" v-if="showError" @close="showError = undefined"/>
     <UCard class="w-full">
       <UsersList />

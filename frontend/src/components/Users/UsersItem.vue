@@ -6,6 +6,7 @@ import SilverAmount from '../UI/SilverAmount.vue'
 import { useWebApp } from 'vue-tg'
 import UAvatar from '../UI/UAvatar.vue'
 import GoldAmount from '../UI/GoldAmount.vue'
+import { Icon } from '@iconify/vue/dist/iconify.js'
 
 const goldStore = useGoldStore()
 
@@ -15,10 +16,9 @@ const props = defineProps({
 })
 
 const wealth = computed(() => {
-  return props.data.silver_amount + goldStore.price * props.data.gold_amount
+  return (props.data.silver_amount + goldStore.price * props.data.gold_amount).toFixed(4)
 })
 
-const tgApp = useWebApp()
 </script>
 
 <template>
@@ -31,7 +31,18 @@ const tgApp = useWebApp()
       <p class="text-white font-bold">
         {{ $props.data.username }} <span v-if="$props.me">(Me)</span>
       </p>
-      <SilverAmount :amount="wealth" />
+      <div class="flex flex-col gap-1 items-end">
+        
+        <div class="flex flex-row justify-end items-center gap-2 " v-if="$props.me">
+          <SilverAmount :amount="$props.data.silver_amount" size="5" class="text-base text-neutral-300"/>
+          <GoldAmount :amount="$props.data.gold_amount" size="5" class="text-base text-neutral-300"/>
+        </div>
+        <div class="flex flex-row items-center gap-2 text-2xl font-bold">
+          <p>{{ wealth }}</p>
+          <Icon icon="tdesign:wealth"/>
+        </div>
+      </div>
+      
     </div>
   </RouterLink>
 </template>

@@ -1,15 +1,17 @@
-from typing import Any, Awaitable, Callable, Dict
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import Message, UserProfilePhotos
-from config import settings
+import socketio
+from .config import settings
+from .db.schemas import UserAddDTO
+from .services import UserService
 
-from db.schemas import UserAddDTO
+sio = socketio.AsyncServer(async_mode="asgi", logger=True, cors_allowed_origins=[])
 
-from services import UserService
 
-async def get_user_photo(user_id:int, bot: Bot):
-    result:UserProfilePhotos  = await bot.get_user_profile_photos(user_id, limit=1)
-    if len(result.photos[0]) > 0:
+async def get_user_photo(user_id: int, bot: Bot):
+    result: UserProfilePhotos = await bot.get_user_profile_photos(user_id, limit=1)
+    if len(result.photos) > 0:
         files = await bot.get_file(result.photos[0][0].file_id)
         url = f"https://api.telegram.org/file/bot{settings.BOT_TOKEN}/{files.file_path}"
         return url
@@ -31,8 +33,12 @@ class UserMiddleware(BaseMiddleware):
             return await event.answer("Bots can`t use this app")
 
         user = await service.create_user(
-            UserAddDTO(id=event.from_user.id, username=event.from_user.username, image_url= await get_user_photo(event.from_user.id, event.bot))
+            UserAddDTO(
+                id=event.from_user.id,
+                username=event.from_user.username,
+                image_url=await get_user_photo(event.from_user.id, event.bot),
+            )
         )
-        
+
         data["user"] = user
         return await handler(event, data)

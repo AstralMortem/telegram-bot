@@ -22,7 +22,7 @@ onMounted(async ()=>{
 
 const wealth = computed(() => {
   if(currentUser.value){
-    return currentUser.value?.silver_amount + goldStore.price * currentUser.value?.gold_amount
+    return (currentUser.value?.silver_amount + goldStore.price * currentUser.value?.gold_amount).toFixed(4)
   }
   return 0
   

@@ -6,11 +6,11 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     Message,
     WebAppInfo,
-    UserProfilePhotos
+    UserProfilePhotos,
 )
-from db.schemas import UserAddDTO
-from services import UserService
-from config import settings
+from ..db.schemas import UserAddDTO
+from ..services import UserService
+from ..config import settings
 
 router = Router()
 

@@ -1,10 +1,21 @@
 <template>
-  <div class="flex flex-row justify-start items-center gap-1">
-    <p class="text-white font-bold text-xl">{{ $props.amount }}</p>
-    <img src="/img/silver_coin.png" class="max-w-10 max-h-10" />
+  <div class="flex flex-row justify-start items-center gap-1 text-white text-xl">
+    <p class=" font-bold ">{{ $props.amount }}</p>
+    <img src="/img/silver_coin.png" :class="[compSize]" />
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps(['amount'])
+import { computed } from 'vue';
+
+const props = defineProps(['amount', 'size'])
+
+const compSize = computed(()=>{
+  switch (props.size){
+    case "5": return "w-5 h-5";
+    case "10": return "w-10 h-10"
+    case "12": return "w-12 h-12"
+    default: return "w-10 h-10"
+  }
+})
 </script>

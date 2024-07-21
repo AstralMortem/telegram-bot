@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import { useGoldStore } from './stores/gold';
+
+const goldStore = useGoldStore();
+goldStore.bindEvents()
 </script>
 
 <template>
@@ -10,4 +14,6 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style scoped>
+
+
 </style>

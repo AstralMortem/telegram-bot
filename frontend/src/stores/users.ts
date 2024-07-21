@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { type IUserList } from '../types'
 import axios from '../plugins/axios'
-import { useWebApp } from 'vue-tg'
 
 export const useUsersStore = defineStore('usersStore', {
   state: () => ({
@@ -15,25 +14,21 @@ export const useUsersStore = defineStore('usersStore', {
     getUsers: (state) => state.users.filter((x) => x.id !== state.current_user.id)
   },
   actions: {
-    async fetchMe() {
-      const tgApp = useWebApp()
+    async fetchUser(user_id: number) {
       this.pending = true
-      if (tgApp.initDataUnsafe.user) {
-        axios
-          .get(`/users/${tgApp.initDataUnsafe.user.id}`)
+      await axios
+          .get(`/users/${user_id}`)
           .then((response) => {
             this.current_user = response.data
           })
           .catch((err) => {
             console.error(err)
           })
-      }
-
       this.pending = false
     },
     async fetchUsers() {
       this.pending = true
-      axios
+      await axios
         .get('/users', { params: { limit: this.limit, offset: this.offset } })
         .then((response) => {
           this.users.push(...response.data)
@@ -47,6 +42,9 @@ export const useUsersStore = defineStore('usersStore', {
     },
     getSelectedUser(user_id: string) {
       return this.users.find((x) => x.id === Number.parseInt(user_id))
+    },
+    setCurrentUser(user_data:IUserList){
+      this.current_user = user_data
     }
   }
 })

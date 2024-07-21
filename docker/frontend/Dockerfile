@@ -1,11 +1,20 @@
-FROM --platform=$BUILDPLATFORM node:latest-alpine AS development
+ARG NODE_VERSION=20.10.0
 
-RUN mkdir /src
+
+FROM node:${NODE_VERSION}-alpine as base
+ENV NODE_ENV=development
+
 WORKDIR /src
 
-COPY ../../frontend/ /src/
-
+#build
+FROM base as build
+COPY ../../frontend/package*.json ../../frontend/package-lock.json ./
 RUN npm install
-ENV HOST=0.0.0.0
+#run 
+FROM base
+COPY ../../frontend/ /src/
+COPY --from=build /src/node_modules /src/node_modules
+ENV HOST 0.0.0.0
+EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT [ "npm", "run", "dev-global" ]
