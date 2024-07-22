@@ -1,17 +1,17 @@
 version: '3'
 
 services:
-  db:
-    image: postgres
-    container_name: pgdb
-    environment:
-      POSTGRES_DB: "bot"
-      POSTGRES_USER: "bot_user"
-      POSTGRES_PASSWORD: "bot_password"
-    volumes:
-      - pgdbdata:/var/lib/postgresql/data/
-    expose:
-      - 5432
+  # db:
+  #   image: postgres
+  #   container_name: pgdb
+  #   environment:
+  #     POSTGRES_DB: "bot"
+  #     POSTGRES_USER: "bot_user"
+  #     POSTGRES_PASSWORD: "bot_password"
+  #   volumes:
+  #     - pgdbdata:/var/lib/postgresql/data/
+  #   expose:
+  #     - 5432
 
   backend:
     container_name: backend
@@ -22,9 +22,9 @@ services:
       - 8000
     env_file:
       - ./.env
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`api.host.com`)
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.backend.rule=Host(`api.host.com`)
 
   frontend:
     container_name: frontend
@@ -35,25 +35,25 @@ services:
       - 3000
     env_file:
       - ./.env
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.frontend.rule=Host(`host.com`)
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.frontend.rule=Host(`host.com`)
 
-  reverse-proxy:
-    container_name: reverse-proxy
-    image: traefik:v2.10
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "433:433"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
-      - /root/ssl:/ssl-certs/
+  # reverse-proxy:
+  #   container_name: reverse-proxy
+  #   image: traefik:v2.10
+  #   command:
+  #     - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #   ports:
+  #     - "80:80"
+  #     - "433:433"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
+  #     - /root/ssl:/ssl-certs/
 
 volumes:
   pgdbdata: null
