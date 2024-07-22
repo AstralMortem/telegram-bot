@@ -24,7 +24,7 @@ services:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`5.101.180.7`)
+      - traefik.http.routers.backend.rule=Host(`api.mavu.pp.ua`)
       - traefik.http.routers.backend.tls=true
 
   frontend:
@@ -38,7 +38,7 @@ services:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend.rule=(Host(`5.101.180.7`) && PathPrefix('/web'))
+      - traefik.http.routers.frontend.rule=Host(`mavu.pp.ua`)
       - traefik.http.routers.backend.tls=true
 
   reverse-proxy:
