@@ -18,42 +18,44 @@ services:
     build: 
       context: .
       dockerfile: ./docker/backend/Dockerfile
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     env_file:
       - ./.env
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.http.routers.backend.rule=Host(`api.host.com`)
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`5.101.180.7`)
+      - traefik.http.routers.backend.tls=true
 
   frontend:
     container_name: frontend
     build:
       context: .
       dockerfile: ./docker/frontend/Dockerfile
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     env_file:
       - ./.env
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.http.routers.frontend.rule=Host(`host.com`)
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=(Host(`5.101.180.7`) && PathPrefix('/web'))
+      - traefik.http.routers.backend.tls=true
 
-  # reverse-proxy:
-  #   container_name: reverse-proxy
-  #   image: traefik:v2.10
-  #   command:
-  #     - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entrypoints.web.address=:80"
-  #   ports:
-  #     - "80:80"
-  #     - "433:433"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
-  #     - /root/ssl:/ssl-certs/
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "433:433"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
+      - ./ssl:/ssl-certs/
 
 volumes:
   pgdbdata: null
