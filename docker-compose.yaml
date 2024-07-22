@@ -1,17 +1,17 @@
 version: '3'
 
 services:
-  # db:
-  #   image: postgres
-  #   container_name: pgdb
-  #   environment:
-  #     POSTGRES_DB: "bot"
-  #     POSTGRES_USER: "bot_user"
-  #     POSTGRES_PASSWORD: "bot_password"
-  #   volumes:
-  #     - pgdbdata:/var/lib/postgresql/data/
-  #   expose:
-  #     - 5432
+  db:
+    image: postgres
+    container_name: pgdb
+    environment:
+      POSTGRES_DB: "bot"
+      POSTGRES_USER: "bot_user"
+      POSTGRES_PASSWORD: "bot_password"
+    volumes:
+      - pgdbdata:/var/lib/postgresql/data/
+    expose:
+      - 5431
 
   backend:
     container_name: backend
@@ -48,10 +48,10 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.address=:88"
     ports:
-      - "80:80"
-      - "433:433"
+      - "88:88"
+      - "8433:8433"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./docker/traefik/traefik.yaml:/etc/traefik/traefik.yaml
