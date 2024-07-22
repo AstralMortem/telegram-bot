@@ -9,7 +9,7 @@ api:
 
 entryPoints:
   web:
-    address: :88
+    address: :80
     http:
       redirections:
         entryPoint:
@@ -17,7 +17,7 @@ entryPoints:
           scheme: https
 
   websecure:
-    address: :8443
+    address: :443
     http:
       tls:
         certResolver: default
