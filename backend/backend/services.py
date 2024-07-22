@@ -55,7 +55,6 @@ class GoldService:
                     status.HTTP_400_BAD_REQUEST, "Transaction does not exists"
                 )
             result = GoldListDTO.model_validate(instance)
-            print(result.model_dump())
             return result
 
     def bounding_curve_price(self, amount):
@@ -95,6 +94,7 @@ class GoldService:
             new_transaction = GoldTransaction(
                 total_gold=new_total_gold,
                 gold_price=self.bounding_curve_price(new_total_gold),
+                old_gold_price=gold.gold_price,
                 user_id=user_id,
                 type="+",
             )
@@ -134,6 +134,7 @@ class GoldService:
             new_transaction = GoldTransaction(
                 total_gold=new_gold_amount,
                 gold_price=self.bounding_curve_price(new_gold_amount),
+                old_gold_price=gold.gold_price,
                 user_id=user_id,
                 type="-",
             )

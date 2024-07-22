@@ -27,6 +27,7 @@ class GoldTransaction(BaseModel):
     id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True, index=True)
     total_gold: Mapped[float] = mapped_column(default=settings.INITIAL_GOLD_SUPPLY)
     gold_price: Mapped[float] = mapped_column(default=settings.INITIAL_GOLD_PRICE)
+    old_gold_price: Mapped[float | None] = mapped_column(default=None)
     user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     type: Mapped[str] = mapped_column(default="+")
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())

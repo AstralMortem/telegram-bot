@@ -27,4 +27,3 @@ class Settings(BaseSettings):
 settings = Settings()
 
 WEBHOOK_URL: str = settings.BACKEND_URL + settings.WEBHOOK_PATH
-print(WEBHOOK_URL)
