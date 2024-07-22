@@ -24,9 +24,8 @@ services:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host(`api.mavu.pp.ua`)
+      - traefik.http.routers.backend.rule=Host(`api.telegram-bot.pp.ua`)
       - traefik.http.routers.backend.tls=true
-
   frontend:
     container_name: frontend
     build:
@@ -38,17 +37,12 @@ services:
       - ./.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend.rule=Host(`mavu.pp.ua`)
-      - traefik.http.routers.backend.tls=true
+      - traefik.http.routers.frontend.rule=Host(`telegram-bot.pp.ua`)
+      - traefik.http.routers.frontend.tls=true
 
   reverse-proxy:
     container_name: reverse-proxy
     image: traefik:v2.10
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
       - "443:443"
