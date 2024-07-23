@@ -42,17 +42,19 @@ class UserService:
 
 
 def calculate_price(token_supply):
-    return (token_supply / settings.INITIAL_GOLD_SUPPLY) ** (
+    res = (token_supply / settings.INITIAL_GOLD_SUPPLY) ** (
         1 / settings.BOUNDING_CURVE_KOEF - 1
     ) * settings.INITIAL_GOLD_PRICE
+    return round_decimal(res, 5)
 
 
 def calculate_new_supply(tokens_to_transact):
-    return settings.INITIAL_GOLD_SUPPLY * (
+    res = settings.INITIAL_GOLD_SUPPLY * (
         (1 + tokens_to_transact / settings.INITIAL_GOLD_SUPPLY)
         ** settings.BOUNDING_CURVE_KOEF
         - 1
     )
+    return round_decimal(res, 5)
 
 
 class GoldService:
@@ -94,7 +96,7 @@ class GoldService:
             total_cost = amount / gold.gold_price  # amount is silver
             user.silver_amount -= amount
             user.gold_amount += total_cost
-            new_total_gold = calculate_new_supply(amount)
+            new_total_gold = gold.total_gold + calculate_new_supply(amount)
 
             new_transaction = GoldTransaction(
                 total_gold=new_total_gold,
@@ -134,7 +136,7 @@ class GoldService:
             total_revenue = gold.gold_price * amount
             user.gold_amount -= amount
             user.silver_amount += total_revenue
-            new_gold_amount = calculate_new_supply(amount)
+            new_gold_amount = gold.total_gold - calculate_new_supply(amount)
 
             new_transaction = GoldTransaction(
                 total_gold=new_gold_amount,
