@@ -6,7 +6,9 @@ from .config import settings
 from .db.schemas import UserAddDTO
 from .services import UserService
 
-sio = socketio.AsyncServer(async_mode="asgi", logger=True, cors_allowed_origins=[])
+sio = socketio.AsyncServer(
+    async_mode="asgi", logger=True, cors_allowed_origins=[], transports=["websocket"]
+)
 
 
 async def get_user_photo(user_id: int, bot: Bot):
