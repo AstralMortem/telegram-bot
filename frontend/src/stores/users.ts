@@ -20,7 +20,10 @@ export const useUsersStore = defineStore('usersStore', {
       await axios
           .get(`/users/${user_id}`)
           .then((response) => {
-            this.current_user = response.data
+            const data = response.data as IUserList
+            data.gold_amount = Number(data.gold_amount.toFixed(4))
+            data.silver_amount = Number(data.silver_amount.toFixed(4))
+            this.current_user = data
           })
           .catch((err) => {
             console.error(err)
@@ -32,7 +35,12 @@ export const useUsersStore = defineStore('usersStore', {
       await axios
         .get('/users', { params: { limit: this.limit, offset: this.offset } })
         .then((response) => {
-          this.users.push(...response.data)
+          const data = response.data as IUserList[]
+          data.map((x)=>{
+            x.gold_amount = Number(x.gold_amount.toFixed(4))
+            x.silver_amount = Number(x.silver_amount.toFixed(4))
+          })
+          this.users.push(...data)
           this.offset += this.limit
         })
         .catch((err) => {

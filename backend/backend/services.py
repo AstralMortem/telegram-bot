@@ -71,15 +71,6 @@ class GoldService:
             result = GoldListDTO.model_validate(instance)
             return result
 
-    def bounding_curve_price(self, amount):
-        # @amount: new total gold (GOLD TO SUPLY + GOLD TO TRANSACT)
-        # @price: gold price
-        k = settings.BOUNDING_CURVE_KOEF / settings.INITIAL_GOLD_SUPPLY
-        result = settings.INITIAL_GOLD_PRICE * math.exp(
-            k * (amount - settings.INITIAL_GOLD_SUPPLY)
-        )
-        return round_decimal(result, 4)
-
     async def buy_gold(self, user_id, amount: float):
         async with sessionmanager.session() as session:
             user = await session.get(User, user_id)

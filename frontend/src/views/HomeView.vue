@@ -76,7 +76,7 @@ onMounted(async () => {
     <p v-if="pending">Loading...</p>
     <UCard class="flex flex-col justify-between w-full text-lg font-bold gap-4" v-else>
       <div class="flex flex-col gap-2 w-full items-center">
-        <p class="self-start text-sm">Market Cup:</p>
+        <p class="self-start text-sm">Reserve:</p>
         <p class="text-2xl text-wrap">{{ Math.round(amount) }} G</p>
       </div>
       <div class="flex flex-col gap-2">
