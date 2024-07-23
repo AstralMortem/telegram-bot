@@ -58,9 +58,11 @@ export const useUsersStore = defineStore('usersStore', {
     bindEvents(){
       socket.on("connect", ()=>{
         socket.on("user:current", (data)=>{
-          const dict = JSON.parse(data)
+          const dict = JSON.parse(data) as IUserList
           if(this.current_user.id != dict.id){
             const index = this.users.findIndex(x => x.id === dict.id)
+            dict.silver_amount = Number(dict.silver_amount.toFixed(4))
+            dict.gold_amount = Number(dict.gold_amount.toFixed(4))
             this.users[index] = dict
           }
         })

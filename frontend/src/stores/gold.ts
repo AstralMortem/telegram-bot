@@ -13,9 +13,9 @@ export const useGoldStore = defineStore('goldStore', {
     async fetchGold() {
       this.pending = true
       await axios.get('/gold').then((resp) => {
-        this.price = resp.data.gold_price
+        this.price = Number(resp.data.gold_price.toFixed(8))
         this.calculateVector(resp.data.gold_price)
-        this.amount = resp.data.total_gold
+        this.amount = Number(resp.data.total_gold.toFixed(8))
       }).catch(error => console.error(error))
       this.pending = false
     },
@@ -23,9 +23,9 @@ export const useGoldStore = defineStore('goldStore', {
       socket.on("connect", ()=>{
         socket.on("gold:get", (data)=>{
           const dict = JSON.parse(data)
-          this.amount = dict.total_gold
+          this.amount = Number(dict.total_gold.toFixed(8))
           this.calculateVector(dict.gold_price)
-          this.price = dict.gold_price
+          this.price = Number(dict.gold_price.toFixed(8))
         })
       })
     },
