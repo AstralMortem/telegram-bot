@@ -5,15 +5,12 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import UsersItem from './UsersItem.vue'
 
 const userStore = useUsersStore()
-const { pending, getUsers, current_user,offset,users } = storeToRefs(userStore)
+const { pending, getUsers, current_user,limit,users } = storeToRefs(userStore)
 const scrollComponent = ref()
 const handleScroll = async () => {
-  let element = scrollComponent.value
-  if (element.getBoundingClientRect().bottom < window.innerHeight) {
-    if(users.value.length < offset.value){
-      await userStore.fetchUsers()
-    }
-    
+  let bottomWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight
+  if (bottomWindow && users.value.length < limit.value) {
+    await userStore.fetchUsers()
   }
 }
 
