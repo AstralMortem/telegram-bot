@@ -18,7 +18,7 @@ const silverAmount = computed({
         return goldAmount.value * goldStore.price
     },
     set(value){
-      goldAmount.value = value / goldStore.price
+      goldAmount.value = Number((value / goldStore.price).toFixed(4))
     }
 })
 
@@ -27,7 +27,7 @@ watch(goldAmount, (newVal)=>{
 })
 
 watch(silverAmount, (newVal)=>{
-  goldAmount.value = newVal / goldStore.price
+  goldAmount.value = Number((newVal / goldStore.price).toFixed(4))
 })
 
 </script>
@@ -48,12 +48,12 @@ watch(silverAmount, (newVal)=>{
               
               <div class="flex flex-row gap-1 justify-start">
                 <img src='/img/gold_coin.png' class="w-10 h-10"/>
-                <UInput v-model="goldAmount" />
+                <UInput v-model.lazy="goldAmount" />
               </div>
               <p class="text-lg font-bold">≈</p>
               <div class="flex flex-row gap-1 justify-start">
                 <img src='/img/silver_coin.png' class="w-10 h-10"/>
-                <UInput v-model="silverAmount"/>
+                <UInput v-model.lazy="silverAmount"/>
               </div>
             </div>
             
