@@ -14,7 +14,5 @@ RUN npm install
 FROM base
 COPY ../../frontend/ /src/
 COPY --from=build /src/node_modules /src/node_modules
-ENV HOST 0.0.0.0
-EXPOSE 3000
 
-ENTRYPOINT [ "npm", "run", "dev-global" ]
+RUN npm run build
