@@ -10,29 +10,26 @@ class User:
 
 
 class Bancor:
-    def __init__(self, collateral, token_supply):
-        self.collateral = collateral
+    def __init__(self, token_supply):
         self.token_supply = token_supply
 
+    def price(self):
+        return (self.token_supply / INITIAL_SUPPLY) ** (1 / F - 1) * INITIAL_PRICE
+
+    def calc_supply(self, tokens):
+        return INITIAL_SUPPLY * ((1 + tokens / INITIAL_SUPPLY) ** F - 1)
+
     def buy_tokens(self, reserve_deposit):
-        new_token_supply = self.token_supply * (
-            (1 + reserve_deposit / self.reserve_balance) ** (1 / self.reserve_ratio) - 1
-        )
+        new_token_supply = self.calc_supply(reserve_deposit)
         self.token_supply += new_token_supply
-        self.reserve_balance += reserve_deposit
-        return new_token_supply
 
     def sell_tokens(self, tokens_sold):
-        reserve_received = self.reserve_balance * (
-            1 - (1 - tokens_sold / self.token_supply) ** self.reserve_ratio
-        )
-        self.token_supply -= tokens_sold
-        self.reserve_balance -= reserve_received
-        return reserve_received
+        new_token_supply = self.calc_supply(tokens_sold)
+        self.token_supply -= new_token_supply
 
 
 def buy_token(user: User, gold_amount, bancor: Bancor):
-    silver_amount = gold_amount / bancor.price()
+    silver_amount = gold_amount * bancor.price()
     if silver_amount > user.user_silver:
         print("Not Enought silver")
         return
@@ -46,11 +43,11 @@ def sell_token(user: User, gold_amount, bancor: Bancor):
         print("Not Enought gold")
         return
     user.user_gold -= gold_amount
-    user.user_silver += gold_amount * bancor.price()
+    user.user_silver += gold_amount / bancor.price()
     bancor.sell_tokens(gold_amount)
 
 
-BANCOR = Bancor(INITIAL_SUPPLY, INITIAL_SUPPLY, F)
+BANCOR = Bancor(INITIAL_SUPPLY)
 USER = User()
 USER2 = User()
 
@@ -75,7 +72,7 @@ while True:
         print(d)
     elif command.startswith("/change_user"):
         if current_user == USER:
-            current_user = USER2
+            current_user
             print("USER1 -> USER2")
         else:
             current_user = USER
