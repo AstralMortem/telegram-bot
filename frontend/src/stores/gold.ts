@@ -13,7 +13,7 @@ export const useGoldStore = defineStore('goldStore', {
     async fetchGold() {
       this.pending = true
       await axios.get('/gold').then((resp) => {
-        this.price = Number((resp.data.gold_price).toFixed(6))
+        this.price = resp.data.gold_price
         this.calculateVector(resp.data.gold_price)
         this.amount = resp.data.total_gold
       }).catch(error => console.error(error))

@@ -45,16 +45,16 @@ def calculate_price(token_supply):
     res = (token_supply / settings.INITIAL_GOLD_SUPPLY) ** (
         1 / settings.BOUNDING_CURVE_KOEF - 1
     ) * settings.INITIAL_GOLD_PRICE
-    return round_decimal(res, 5)
+    return round_decimal(res, 8)
 
 
 def calculate_new_supply(tokens_to_transact):
     res = settings.INITIAL_GOLD_SUPPLY * (
-        (1 + tokens_to_transact / settings.INITIAL_GOLD_SUPPLY)
+        (1 + (tokens_to_transact / settings.INITIAL_GOLD_SUPPLY))
         ** settings.BOUNDING_CURVE_KOEF
         - 1
     )
-    return round_decimal(res, 5)
+    return round_decimal(res, 8)
 
 
 class GoldService:

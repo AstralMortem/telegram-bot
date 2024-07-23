@@ -19,8 +19,7 @@ class Settings(BaseSettings):
 
     INITIAL_GOLD_SUPPLY: int = 1000000000
     INITIAL_GOLD_PRICE: int = 1
-    BOUNDING_CURVE_KOEF: float = 0.02
-
+    BOUNDING_CURVE_KOEF: float = 0.85
     model_config = SettingsConfigDict(env_file=DOTENV)
 
 

@@ -115,27 +115,39 @@ async def webhook(request: Request):
 ---
 ### Bounding Curve
 Крива зв’язку – це математична концепція, яка використовується для опису зв’язку між ціною та пропозицією активу.
-При створенні алгоритму використовував [цю статтю](https://yos.io/2018/11/10/bonding-curves/)
-Для алгоритму було вирішено використовувати експоненціальний закон, провівши аналіз отримав таку формулу
+При створенні алгоритму використовував [цю статтю](https://drive.google.com/file/d/0B3HPNP-GDn7aRkVaV3dkVl9NS2M/view?resourcekey=0-mbIgrdd0B9H8dPNRaeB_TA)
 
-$P = P_0 * e^{k(S-S_0)}$, $k = {1 \over S_0}$
+для знаходження ціни токену використовуємо формулу
 
-де $S_0$ - початкова к-ть токенів, $P_0$ - початкова ціна токена,
-$P$ - нова ціна токена, $S$ - нова к-ть токенів
+$P = ({S \over S_0})^a * P_0$ де  $a = {1 \over F} -1$
 
-Наприклад якщо користувач хоче купити 10 токенів а початкова к-ть токенів 100, то $S= 100 + 10 = 110$, якщо продати 10, то $S = 100 - 10 = 90$
-
-Для агресивнішого росту ціни активу, можна скорегувати коефіцієнт $k$, збільшивши чисельник, наприклад для $S_0 = 1000000000$, оптимальни коефіцієнт $k = { 100000\over S_0}$
+P -ціна токену S - Загальна пропозиція $S_0$ - Початкова пропозиція $P_0$ - початкова ціна F - reserve ratio
 
 функція на Python:
 
 ```
-def bounding_curve_price(self, amount):
-        k = settings.BOUNDING_CURVE_KOEF / settings.INITIAL_GOLD_SUPPLY
-        result = settings.INITIAL_GOLD_PRICE * math.exp(
-            k * (amount - settings.INITIAL_GOLD_SUPPLY)
-        )
-        return round_decimal(result, 4)
+def calculate_price(token_supply):
+    res = (token_supply / settings.INITIAL_GOLD_SUPPLY) ** (
+        1 / settings.BOUNDING_CURVE_KOEF - 1
+    ) * settings.INITIAL_GOLD_PRICE
+    return round_decimal(res, 5)
+```
+
+Для обчислення нової пропозиції використовуємо формулу
+
+$T = S_0 ((1+ {E\over R_0})^F - 1)$
+
+де T нова пропозиція E -кть токенів які потрібно обчислити
+
+```
+def calculate_new_supply(tokens_to_transact):
+    res = settings.INITIAL_GOLD_SUPPLY * (
+        (1 + (tokens_to_transact / settings.INITIAL_GOLD_SUPPLY))
+        ** settings.BOUNDING_CURVE_KOEF
+        - 1
+    )
+    return round_decimal(res, 5)
+
 ```
 ---
 

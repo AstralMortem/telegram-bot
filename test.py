@@ -1,6 +1,6 @@
 INITIAL_PRICE = 1
 INITIAL_SUPPLY = 1000000000
-F = 0.5
+F = 0.02
 
 
 class User:
