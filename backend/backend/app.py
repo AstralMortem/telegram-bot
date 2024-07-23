@@ -38,8 +38,8 @@ dp = Dispatcher()
 app = FastAPI(lifespan=lifespan)
 
 
-app_socket = socketio.ASGIApp(sio)
-app.mount("/socket.io", app_socket)
+app_socket = socketio.ASGIApp(sio, socketio_path="api/socket.io")
+app.mount("/api/socket.io", app_socket)
 
 app.add_middleware(
     CORSMiddleware,

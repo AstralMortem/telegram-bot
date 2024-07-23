@@ -12,19 +12,4 @@ services:
       - ./.env
     volumes:
       - ./backend:/src/
-    
-  frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: ./docker/frontend/Dockerfile
-    expose:
-      - 3000
-    env_file:
-      - ./.env
-    volumes:
-      - ./frontend:/src/
-      - node_modules:/src/node_modules/
-
-volumes:
-  node_modules: null
+  

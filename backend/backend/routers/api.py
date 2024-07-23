@@ -4,7 +4,7 @@ from ..db.schemas import GoldBody, Pagination
 from ..services import UserService, GoldService
 from ..utils import sio
 
-api_router = APIRouter()
+api_router = APIRouter(prefix="/api")
 
 user_service = Annotated[UserService, Depends(UserService)]
 gold_service = Annotated[GoldService, Depends(GoldService)]
