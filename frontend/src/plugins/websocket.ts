@@ -4,5 +4,6 @@ export const socket = io(url,{
     "extraHeaders":{
         "ngrok-skip-browser-warning":"true"
     },
+    path: "/api/socket.io"
 })
 
